@@ -1,6 +1,10 @@
 import React from "react";
+import AppRoutes from "./AppRoutes";
 import "../Styles/styles.scss";
 
-const App = () => <div>hola </div>;
+
+const App = () => (
+    <AppRoutes />
+)
 
 export default App;
