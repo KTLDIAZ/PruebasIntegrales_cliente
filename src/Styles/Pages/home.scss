@@ -1,0 +1,28 @@
+.home-main-container {
+    width: 90%;
+    height: 700px;
+    background-color: $bluesecond;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 96px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.home-second-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90%;
+    width: 40%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.img-temp {
+    height: 300px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
