@@ -31,7 +31,7 @@ const DialogForm = () => {
         />
       </DialogContent>
       <DialogActions style={{ background: "White", justifyContent: "Center" }}>
-        <Button color="primary">Login</Button>
+        <Button color="primary">Guardar</Button>
       </DialogActions>
     </Dialog>
   );
