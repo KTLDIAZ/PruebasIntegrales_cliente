@@ -9,19 +9,13 @@
     justify-content: space-around;
     background-color: white;
     height: 90%;
-    width: 40%;
-    margin-top: auto;
-    margin-bottom: auto;
+    width: 80%;
+    margin: auto;
     border-radius: 8px;
     text-align: center;
 }
 
-.link {
-    color: $blue-link;
-    text-decoration: underline;
-    font-size: $h1-font-size;
-    &__area-card {
-        margin-right: auto;
-        padding-left: 41px;
-    }
+.link-area-card {
+    margin-right: auto;
+    padding-left: 41px;
 }

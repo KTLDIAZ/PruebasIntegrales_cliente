@@ -1,8 +1,10 @@
-import React from "react"
-import { NavLink } from "react-router-dom"
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Link = ({ text, path }) => (
-    <p className="link"> {text} <NavLink to={path}></NavLink></p>
-)
+  <p className="link">
+    <NavLink to={path}>{text} </NavLink>
+  </p>
+);
 
-export default Link
+export default Link;

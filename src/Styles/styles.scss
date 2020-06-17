@@ -1,15 +1,11 @@
-//bases
+//Base
 @import "./base.scss";
 //atoms
 @import "./Atoms/button.scss";
+@import "./Atoms/link.scss";
 //molecules
 //organisms
 @import "./Organisms/area-card.scss";
 //pages
 @import "./Pages/home.scss";
-//Base
-@import "./base.scss";
-//Atoms
-//Molecules
-//Organisms
-//Pages
+@import "./Pages/areas.scss";
