@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/* import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
 import { Grid, NativeSelect } from "@material-ui/core";
 import AddBox from "@material-ui/icons/AddBox";
@@ -12,10 +12,9 @@ import LastPage from "@material-ui/icons/LastPage";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Search from "@material-ui/icons/Search";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-//import Axios from "axios";
+import Axios from "axios";
 
-const ProcessTable = () => {
+const asdas = () => {
   /* const changeDataCaso = async (selectedRow) => {
     let response = await this.updateEstadoAtencionInDataBase(
       selectedRow.estado_atencion,
@@ -34,7 +33,7 @@ const ProcessTable = () => {
   const handleChangeStatus = (name, selectedRow) => async (e) => {
     selectedRow[name] = e.target.value;
     //let result = await Axios.update("url", data);
-  };*/
+  };
 
   const [state, setState] = useState([
     {
@@ -43,7 +42,7 @@ const ProcessTable = () => {
       executable: "idk",
       by: "el scrum",
       observations: "10/10",
-      status: "Esperando correción",
+      status: "en proceso",
     },
     {
       number: 2,
@@ -51,7 +50,7 @@ const ProcessTable = () => {
       executable: "idk",
       by: "el scrum",
       observations: "10/10",
-      status: "En proceso",
+      status: "en proceso",
     },
     {
       number: 3,
@@ -59,12 +58,12 @@ const ProcessTable = () => {
       executable: "idk",
       by: "el scrum",
       observations: "10/10",
-      status: "Fallido",
+      status: "en proceso",
     },
   ]);
 
   const columns = [
-    { title: "No.", field: "number", editable: "never" },
+    { title: "No.", field: "number", editable: "Never" },
     { title: "Descripción", field: "description" },
     { title: "Ejecutable del sistema", field: "executable" },
     {
@@ -77,7 +76,7 @@ const ProcessTable = () => {
       field: "status",
       render: (rowData) => (
         <NativeSelect
-          value={rowData.status}
+          //value={rowData.status}
           //onChange={handleChangeStatus("status", rowData)}
           name="status"
           inputProps={{ "aria-label": "status" }}
@@ -91,6 +90,12 @@ const ProcessTable = () => {
     },
   ];
 
+  useEffect(() => {
+    Axios.get(`http://my-json-server.typicode.com/betoquiroga/json-db/cursos/`)
+      .then((res) => setState(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
   const TableIcons = {
     Add: AddBox,
     Delete: DeleteOutline,
@@ -103,7 +108,6 @@ const ProcessTable = () => {
     NextPage: ChevronRight,
     PreviousPage: ChevronLeft,
     Search: Search,
-    SortArrow: ArrowUpward,
   };
 
   return (
@@ -163,4 +167,5 @@ const ProcessTable = () => {
   );
 };
 
-export default ProcessTable;
+export default asdas;
+ */

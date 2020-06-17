@@ -25,7 +25,7 @@ const NavBar = () => {
       <AppBar position="absolute">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Pruebas XXX
+            Pruebas X
           </Typography>
         </Toolbar>
       </AppBar>
