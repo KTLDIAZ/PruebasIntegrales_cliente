@@ -1,18 +1,14 @@
 import React from "react";
 import Button from "../Atoms/AreaButton";
-import Link from "../Atoms/Link";
 
-const AreaCard = ({ name, link }) => (
+const AreaCard = ({ name, tests }) => (
   <div className="area-card-main-container">
     <p className="area-card-main-container__title">{name}</p>
-    <Button text={"Prueba"} path={"/"} />
-    <Button text={"Prueba"} path={"/"} />
-    <Button text={"Prueba"} path={"/"} />
-    <Button text={"Prueba"} path={"/"} />
-    <p className="link-area-card">
-      <Link text={link} path={"/areas"} />
-    </p>
+    {tests &&
+      tests.pruebas.map((test) => (
+        <Button key={test.id} text={test.prueba} path={`/table/${test.id}`} />
+      ))}
   </div>
 );
-
+/* {console.log(tests.pruebas.map((test) => console.log(test.prueba)))} */
 export default AreaCard;
