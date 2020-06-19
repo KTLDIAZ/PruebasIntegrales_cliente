@@ -54,7 +54,7 @@ class Areas extends Component {
           <div className="areas-main-container__grid">
             {this.state &&
               this.state.map((area) => (
-                <AreaCard key={area.id} name={area.area} tests={area.pruebas} />
+                <AreaCard key={area.id} name={area.area} tests={area} />
               ))}
           </div>
         </article>
