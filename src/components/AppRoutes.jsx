@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./Pages/Home";
 import ProcessTable from "./Templates/ProcessTable";
 import Form from "./Templates/Form";
@@ -8,13 +8,16 @@ import Areas from "./Pages/Areas";
 
 const AppRoutes = () => {
   return (
-    <>
+    <Router>
       <NavBar />
-      <Route path="/" exact component={Home} />
-      <Route path="/table" component={ProcessTable} />
-      <Route path="/form" component={Form} />
-      <Route path="/areas" component={Areas} />
-    </>
+      <Switch>
+        <Route path="/" exact component={Home} />
+        <Route path="/table" component={ProcessTable} />
+        <Route path="/table/:id" component={ProcessTable} />
+        <Route path="/form" component={Form} />
+        <Route path="/areas" component={Areas} />
+      </Switch>
+    </Router>
   );
 };
 
