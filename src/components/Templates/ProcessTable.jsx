@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import MaterialTable from "material-table";
-import { Grid, NativeSelect } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import AddBox from "@material-ui/icons/AddBox";
 import Edit from "@material-ui/icons/Edit";
 import DeleteOutline from "@material-ui/icons/DeleteOutline";
@@ -13,154 +13,157 @@ import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Search from "@material-ui/icons/Search";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
-//import Axios from "axios";
+import Axios from "axios";
 
-const ProcessTable = () => {
-  /* const changeDataCaso = async (selectedRow) => {
-    let response = await this.updateEstadoAtencionInDataBase(
-      selectedRow.estado_atencion,
-      selectedRow.id_caso
-    );
-    if (response === "Ok") {
-      //Se actulizo el estado de aceptacion en el backend entonces hay que actualizar en el frontend
-      let pos = this.getPosDataCaso(selectedRow.id_caso);
-      let newArray = this.state.casoData;
-      newArray[pos] = selectedRow;
-      this.setState({ casoData: newArray });
-    }
-    this.showDialogAlert(!response === "okay");
-  }; 
+const api = process.env.REACT_APP_API_URL;
+class ProcessTable extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: [
+        {
+          number: 1,
+          description: "asdasd",
+          executable: "idk",
+          by: "el scrum",
+          observations: "10/10",
+          status: "waiting",
+        },
+        {
+          number: 2,
+          description: "asdasd",
+          executable: "idk",
+          by: "el scrum",
+          observations: "10/10",
+          status: "inProcess",
+        },
+        {
+          number: 3,
+          description: "a",
+          executable: "idk",
+          by: "el scrum",
+          observations: "10/10",
+          status: "success",
+        },
+      ],
+    };
+  }
 
-  const handleChangeStatus = (name, selectedRow) => async (e) => {
-    selectedRow[name] = e.target.value;
-    //let result = await Axios.update("url", data);
-  };*/
+  /* componentDidMount() {
+    Axios.get(`${api}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  } */
 
-  const [state, setState] = useState([
-    {
-      number: 1,
-      description: "asdasd",
-      executable: "idk",
-      by: "el scrum",
-      observations: "10/10",
-      status: "Esperando correción",
-    },
-    {
-      number: 2,
-      description: "asdasd",
-      executable: "idk",
-      by: "el scrum",
-      observations: "10/10",
-      status: "En proceso",
-    },
-    {
-      number: 3,
-      description: "asdasd",
-      executable: "idk",
-      by: "el scrum",
-      observations: "10/10",
-      status: "Fallido",
-    },
-  ]);
+  handleAdd() {
+    Axios.post(`${api}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }
 
-  const columns = [
-    { title: "No.", field: "number", editable: "never" },
-    { title: "Descripción", field: "description" },
-    { title: "Ejecutable del sistema", field: "executable" },
-    {
-      title: "Encargado",
-      field: "by",
-    },
-    { title: "Observaciones", field: "observations" },
-    {
-      title: "Status",
-      field: "status",
-      render: (rowData) => (
-        <NativeSelect
-          value={rowData.status}
-          //onChange={handleChangeStatus("status", rowData)}
-          name="status"
-          inputProps={{ "aria-label": "status" }}
-        >
-          <option value="Exitoso">Exitoso</option>
-          <option value="En proceso">En proceso</option>
-          <option value="Fallido">Fallido</option>
-          <option value="Esperando correción">Esperando correción</option>
-        </NativeSelect>
-      ),
-    },
-  ];
+  handleUpdate() {
+    Axios.put(`${api}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }
 
-  const TableIcons = {
-    Add: AddBox,
-    Delete: DeleteOutline,
-    Edit: Edit,
-    ThirdStateCheck: Remove,
-    Check: CheckIcon,
-    Clear: ClearIcon,
-    FirstPage: FirstPage,
-    LastPage: LastPage,
-    NextPage: ChevronRight,
-    PreviousPage: ChevronLeft,
-    Search: Search,
-    SortArrow: ArrowUpward,
-  };
+  handleDelete() {
+    Axios.delete(`${api}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  }
 
-  return (
-    <Grid
-      container
-      justify="flex-end"
-      style={{
-        width: "70%",
-        alignSelf: "center",
-        margin: "10%",
-      }}
-    >
-      <MaterialTable
-        title="Area XXX"
-        icons={TableIcons}
-        columns={columns}
-        data={state}
-        editable={{
-          onRowAdd: (newData) =>
-            new Promise((resolve) => {
-              setTimeout(() => {
-                resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data.push(newData);
-                  return { ...prevState, data };
-                });
-              }, 600);
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve) => {
-              setTimeout(() => {
-                resolve();
-                if (oldData) {
-                  setState((prevState) => {
-                    const data = [...prevState.data];
-                    data[data.indexOf(oldData)] = newData;
-                    return { ...prevState, data };
-                  });
-                }
-              }, 600);
-            }),
-          onRowDelete: (oldData) =>
-            new Promise((resolve) => {
-              setTimeout(() => {
-                resolve();
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  return { ...prevState, data };
-                });
-              }, 600);
-            }),
+  render() {
+    const columns = [
+      { title: "No.", field: "number", editable: "never" },
+      { title: "Descripción", field: "description" },
+      { title: "Ejecutable del sistema", field: "executable" },
+      {
+        title: "Encargado",
+        field: "by",
+      },
+      { title: "Observaciones", field: "observations" },
+      {
+        title: "Status",
+        field: "status",
+        lookup: {
+          success: "Exitoso",
+          inProcess: "En proceso",
+          failed: "Fallido",
+          waiting: "Esperando correción",
+        },
+      },
+    ];
+
+    const TableIcons = {
+      Add: AddBox,
+      Delete: DeleteOutline,
+      Edit: Edit,
+      ThirdStateCheck: Remove,
+      Check: CheckIcon,
+      ResetSearch: ClearIcon,
+      Clear: ClearIcon,
+      FirstPage: FirstPage,
+      LastPage: LastPage,
+      NextPage: ChevronRight,
+      PreviousPage: ChevronLeft,
+      Search: Search,
+      SortArrow: ArrowUpward,
+    };
+
+    return (
+      <Grid
+        container
+        justify="flex-end"
+        style={{
+          width: "70%",
+          alignSelf: "center",
+          margin: "10%",
         }}
-      />
-    </Grid>
-  );
-};
+      >
+        <MaterialTable
+          title="Area XXX"
+          icons={TableIcons}
+          columns={columns}
+          /* options={{
+          search: false,
+        }} */
+          data={this.state.data}
+          editable={{
+            onRowAdd: (newData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  this.setState({ data: [...this.state.data, newData] });
+
+                  resolve();
+                }, 1000);
+              }),
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  const dataUpdate = [...this.state.data];
+                  const index = oldData.tableData.id;
+                  dataUpdate[index] = newData;
+                  this.setState({ data: [...dataUpdate] });
+                  resolve();
+                }, 1000);
+              }),
+            onRowDelete: (oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  const dataDelete = [...this.state.data];
+                  const index = oldData.tableData.id;
+                  dataDelete.splice(index, 1);
+                  this.setState({ data: [...dataDelete] });
+
+                  resolve();
+                }, 1000);
+              }),
+          }}
+        />
+      </Grid>
+    );
+  }
+}
 
 export default ProcessTable;
