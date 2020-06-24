@@ -28,6 +28,13 @@ const NavBar = () => {
             <NavLink to="/" className="link">
               Pruebas Integrales
             </NavLink>
+            <NavLink
+              to="/areas"
+              className="link"
+              style={{ marginLeft: "20px" }}
+            >
+              Areas
+            </NavLink>
           </Typography>
         </Toolbar>
       </AppBar>
