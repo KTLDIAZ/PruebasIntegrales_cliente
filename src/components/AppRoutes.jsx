@@ -5,6 +5,7 @@ import ProcessTable from "./Templates/ProcessTable";
 import Form from "./Templates/Form";
 import NavBar from "./Organisms/NavBar";
 import Areas from "./Pages/Areas";
+import Chart from "./Atoms/Chart";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
         <Route path="/table/:id" component={ProcessTable} />
         <Route path="/form" component={Form} />
         <Route path="/areas" component={Areas} />
+        <Route path="/chart" component={Chart} />
       </Switch>
     </Router>
   );
