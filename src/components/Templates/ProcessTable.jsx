@@ -14,16 +14,20 @@ import Search from "@material-ui/icons/Search";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import Axios from "axios";
+import Form from "./DialogForm";
 
 class ProcessTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
+      rowData: null,
+      open: false,
       apiStatus: false,
       id: this.props.match.params.id,
       testId: this.props.match.params.testId,
     };
+    this.closeDialog = this.closeDialog.bind(this);
   }
 
   componentDidMount() {
@@ -49,6 +53,14 @@ class ProcessTable extends Component {
         this.setState({ apiStatus: true });
       })
       .catch((err) => console.log(err));
+  }
+
+  openDialog() {
+    this.setState({ open: true });
+  }
+
+  closeDialog() {
+    this.setState({ open: false });
   }
 
   render() {
@@ -93,7 +105,7 @@ class ProcessTable extends Component {
       SortArrow: ArrowUpward,
     };
 
-    const { id, testId } = this.state;
+    const { id, testId, open, rowData } = this.state;
 
     return (
       <Grid
@@ -106,6 +118,7 @@ class ProcessTable extends Component {
           marginTop: "10%",
         }}
       >
+        <Form open={open} onClose={this.closeDialog} rowData={rowData} />
         {this.state.data && (
           <MaterialTable
             title={`Etapa ${id}: ${testId}`}
@@ -119,7 +132,7 @@ class ProcessTable extends Component {
                 icon: VisibilityIcon,
                 hidden: rowData.status_detalle === "waiting" ? false : true,
                 tooltip: "Incidencia",
-                onClick: (event) => console.log(rowData),
+                onClick: (event) => this.setState({ open: true, rowData }),
               }),
             ]}
             data={this.state.data}
