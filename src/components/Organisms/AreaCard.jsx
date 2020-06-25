@@ -9,8 +9,8 @@ const AreaCard = ({ name, tests }) => {
         tests.map((test) => (
           <Button
             key={test.stages_detalle}
-            text={test.exesistem_detalle}
-            path={`/table/${name}/${test.stages_detalle}`}
+            text={`Etapa: ${test}`}
+            path={`/table/${name}/${test}`}
           />
         ))}
     </div>
