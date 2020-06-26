@@ -4,6 +4,7 @@ import Home from "./Pages/Home";
 import ProcessTable from "./Templates/ProcessTable";
 import NavBar from "./Organisms/NavBar";
 import Areas from "./Pages/Areas";
+import Chart from "./Atoms/Chart";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,9 @@ const AppRoutes = () => {
         <Route path="/" exact component={Home} />
         <Route path="/table/:testId/:id" component={ProcessTable} />
         <Route path="/areas" component={Areas} />
+
+        <Route path="/chart" component={Chart} />
+
         <Route path="/dashboard/:testId/:id" component={Areas} />
       </Switch>
     </Router>
