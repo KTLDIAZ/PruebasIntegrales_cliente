@@ -13,7 +13,7 @@ class Chart extends Component {
     super(props);
     this.state = {
       ChartData: {
-        labels: ["dato1", "Dato2", "Dato3"], //Este es el nombre que se le da a los datos, se pueder agregar más o menos
+        labels: ["Exitoso", "En proceso", "Fallido", "Esperando Corrección"], //Este es el nombre que se le da a los datos, se pueder agregar más o menos
         datasets: [
           {
             label: "Nombre", //Este label solo aparece en los gráficos de tipo Bar
@@ -27,7 +27,7 @@ class Chart extends Component {
   render() {
     return (
       <div className="chart-basic-container">
-        <h2 className="chart-basic-container--title">Título</h2>
+        <h2 className="chart-basic-container--title">{title}</h2>
         <Bar data={this.state.ChartData} />
       </div>
     );
