@@ -18,10 +18,16 @@ class DialogForm extends Component {
     this.state = {
       apiStatus: false,
       required: null,
-      form: this.props,
+      form: this.props.rowData,
+      file: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.form.image_detalle === null)
+      this.setState({ form: { ...this.state.form, image_detalle: "" } });
   }
 
   handleChange(e) {
@@ -33,28 +39,27 @@ class DialogForm extends Component {
     });
   }
 
-  handleSubmit() {
+  handleSubmit(method) {
     const state = this.state.form;
     if (
       state.name_detalle &&
       state.exesistem_detalle &&
       state.testmanager_detalle &&
       state.status_detalle &&
-      state.observations_detalle
+      state.observations_detalle &&
+      state.stages_detalle
     ) {
-      Axios.post(`/api/Detalle/Guardar`, this.state.form)
+      Axios.post(`/api/Detalle/${method}`, state)
         .then((res) => {
           console.log(res);
-          this.setState({ apiStatus: true, required: null });
+          this.setState({ apiStatus: true });
         })
         .catch((err) => console.log(err));
-    } else {
-      this.setState({ required: true });
     }
   }
 
   render() {
-    console.log(this.props);
+    const method = this.props.method;
     const state = this.state.form;
     return (
       <Dialog maxWidth="sm" fullWidth={true} open={this.props.open}>
@@ -69,10 +74,8 @@ class DialogForm extends Component {
                   type="number"
                   variant="outlined"
                   label="Etapa"
-                  defaultValue="1"
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  value={state.stages_detalle}
+                  onChange={this.handleChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -97,10 +100,8 @@ class DialogForm extends Component {
                   type="number"
                   variant="outlined"
                   label="Paso N°"
-                  defaultValue="1"
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                  value={state.stepsnuber_detalle}
+                  onChange={this.handleChange}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -142,7 +143,7 @@ class DialogForm extends Component {
                   onChange={this.handleChange}
                 />
               </Grid>
-              <Grid item xs={5}>
+              <Grid item xs={12} sm={6}>
                 <InputLabel id="demo-simple-select-label">Status</InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
@@ -158,6 +159,34 @@ class DialogForm extends Component {
                   <MenuItem value={"waiting"}>Esperando correción</MenuItem>
                 </Select>
               </Grid>
+              {this.props.rowData.status_detalle === "waiting" ? (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    margin="dense"
+                    id="image_detalle"
+                    name="image_detalle"
+                    type="text"
+                    label="Url_Image"
+                    variant="outlined"
+                    value={state.image_detalle}
+                    onChange={this.handleChange}
+                  />
+                </Grid>
+              ) : (
+                <p></p>
+              )}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  hidden
+                  margin="dense"
+                  id="id_detalle"
+                  name="id_detalle"
+                  type="number"
+                  variant="outlined"
+                  label="id_detalle"
+                  value={state.id_detalle}
+                />
+              </Grid>
             </Grid>
           </form>
         </DialogContent>
@@ -165,8 +194,11 @@ class DialogForm extends Component {
           className="dialog-actions"
           style={{ justifyContent: "center" }}
         >
-          <Button style={{ color: "#fff" }} onClick={this.handleSubmit}>
-            Guardar
+          <Button
+            style={{ color: "#fff" }}
+            onClick={() => this.handleSubmit(method)}
+          >
+            {method}
           </Button>
           <Button style={{ color: "#fff" }} onClick={this.props.onClose}>
             Cancelar
@@ -176,17 +208,5 @@ class DialogForm extends Component {
     );
   }
 }
-
-DialogForm.defautlProps = {
-  form: {
-    name_detalle: "",
-    stepsnuber_detalle: 1,
-    stages_detalle: 1,
-    exesistem_detalle: "",
-    testmanager_detalle: "",
-    status_detalle: "",
-    observations_detalle: "",
-  },
-};
 
 export default DialogForm;

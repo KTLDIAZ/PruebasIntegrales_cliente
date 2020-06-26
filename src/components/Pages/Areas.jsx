@@ -9,19 +9,11 @@ class Areas extends Component {
     this.state = {
       data: [],
       areas: [],
+      stages: [],
       filters: [],
       loadComplete: false,
     };
   }
-
-  /* exesistem_detalle: "Compras.exe"
-id_detalle: 1
-name_detalle: "Compra"
-observations_detalle: "Ninguna"
-stages_detalle: 1
-status_detalle: "success"
-stepsnuber_detalle: 1
-testmanager_detalle: "Fernando" */
 
   getAreas = async () => {
     let res = await Axios.get(`/api/Detalle/ObtenerTodos`);
@@ -43,12 +35,16 @@ testmanager_detalle: "Fernando" */
   getArea = async (element) => {
     let res = await Axios.get(`/api/Detalle/Filtro?name=${element}`);
     let data = res.data;
-    //console.log(data);
+    data.forEach((element) => {
+      this.setState({ stages: [...this.state.stages, element.stages_detalle] });
+    });
     this.setState({
-      filters: [...this.state.filters, { area: element, tests: data }],
+      filters: [
+        ...this.state.filters,
+        { area: element, tests: [...new Set(this.state.stages)] },
+      ],
     });
     this.setState({ loadComplete: true });
-    //console.log(this.state.filters);
   };
 
   componentDidMount() {
@@ -63,10 +59,8 @@ testmanager_detalle: "Fernando" */
             <Link text="Nueva Área" path={"/"} />
           </div>
           <div className="areas-main-container__grid">
-            {/*console.log(this.state.filters[0].tests, this.state.filters[0].area);*/}
             {this.state.loadComplete === true &&
               this.state.filters.map((area) => {
-                console.log(this.state.filters);
                 return (
                   <AreaCard
                     key={area.area}

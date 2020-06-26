@@ -13,9 +13,25 @@ const Home = () => {
     setOpen(false);
   };
 
+  const form = {
+    id_detalle: null,
+    name_detalle: "",
+    stepsnuber_detalle: 1,
+    stages_detalle: 1,
+    exesistem_detalle: "",
+    testmanager_detalle: "",
+    status_detalle: "",
+    observations_detalle: "",
+  };
+
   return (
     <article className="home-main-container">
-      <Form open={open} onClose={closeDialog} />
+      <Form
+        open={open}
+        onClose={closeDialog}
+        rowData={form}
+        method={"Guardar"}
+      />
       <div className="home-second-container">
         <button className="area-button" onClick={openDialog}>
           <p className="area-button-text">Iniciar una nueva Prueba</p>

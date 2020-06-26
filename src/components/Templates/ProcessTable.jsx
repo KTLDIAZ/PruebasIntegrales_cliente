@@ -13,8 +13,10 @@ import PreviousPage from "@material-ui/icons/ChevronRight";
 import Search from "@material-ui/icons/Search";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import AttachmentIcon from "@material-ui/icons/Attachment";
 import Axios from "axios";
 import Form from "./DialogForm";
+import Image from "../Organisms/Image";
 
 class ProcessTable extends Component {
   constructor(props) {
@@ -23,11 +25,15 @@ class ProcessTable extends Component {
       data: [],
       rowData: null,
       open: false,
+      openImage: false,
       apiStatus: false,
       id: this.props.match.params.id,
       testId: this.props.match.params.testId,
     };
+    this.openDialog = this.openDialog.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
+    this.openImage = this.openImage.bind(this);
+    this.closeImage = this.closeImage.bind(this);
   }
 
   componentDidMount() {
@@ -37,30 +43,38 @@ class ProcessTable extends Component {
       .catch((err) => console.log(err));
   }
 
-  handleAdd(data) {
-    Axios.post(`/api/Detalle/Guardar`, data)
+  handleAdd = async (data) => {
+    await Axios.post(`/api/Detalle/Guardar`, data)
       .then((res) => {
         console.log(res);
         this.setState({ apiStatus: true });
       })
       .catch((err) => console.log(err));
-  }
+  };
 
-  handleUpdate(data) {
-    Axios.post(`/api/Detalle/Actualizar`, data)
+  handleUpdate = async (data) => {
+    await Axios.post(`/api/Detalle/Actualizar`, data)
       .then((res) => {
         console.log(res);
         this.setState({ apiStatus: true });
       })
       .catch((err) => console.log(err));
-  }
+  };
 
-  openDialog() {
-    this.setState({ open: true });
+  openDialog(rowData) {
+    this.setState({ open: true, rowData });
   }
 
   closeDialog() {
     this.setState({ open: false });
+  }
+
+  openImage(rowData) {
+    this.setState({ openImage: true, rowData });
+  }
+
+  closeImage() {
+    this.setState({ openImage: false });
   }
 
   render() {
@@ -105,7 +119,7 @@ class ProcessTable extends Component {
       SortArrow: ArrowUpward,
     };
 
-    const { id, testId, open, rowData } = this.state;
+    const { id, testId, open, rowData, openImage } = this.state;
 
     return (
       <Grid
@@ -118,7 +132,25 @@ class ProcessTable extends Component {
           marginTop: "10%",
         }}
       >
-        <Form open={open} onClose={this.closeDialog} rowData={rowData} />
+        {open === true ? (
+          <Form
+            open={open}
+            onClose={this.closeDialog}
+            rowData={rowData}
+            method={"Actualizar"}
+          />
+        ) : (
+          <p></p>
+        )}
+        {openImage === true ? (
+          <Image
+            open={openImage}
+            url={rowData.image_detalle}
+            onClose={this.closeImage}
+          />
+        ) : (
+          <p></p>
+        )}
         {this.state.data && (
           <MaterialTable
             title={`Etapa ${id}: ${testId}`}
@@ -131,8 +163,14 @@ class ProcessTable extends Component {
               (rowData) => ({
                 icon: VisibilityIcon,
                 hidden: rowData.status_detalle === "waiting" ? false : true,
-                tooltip: "Incidencia",
-                onClick: (event) => this.setState({ open: true, rowData }),
+                tooltip: "Abrir incidencia",
+                onClick: (event) => this.openDialog(rowData),
+              }),
+              (rowData) => ({
+                icon: AttachmentIcon,
+                hidden: rowData.image_detalle ? false : true,
+                tooltip: "Ver imagen",
+                onClick: (event) => this.openImage(rowData),
               }),
             ]}
             data={this.state.data}
@@ -149,6 +187,8 @@ class ProcessTable extends Component {
                         data: [...this.state.data, newData],
                         apiStatus: false,
                       });
+                    if (newData.status_detalle === "waiting")
+                      this.setState({ open: true, rowData: newData });
                     resolve();
                   }, 1000);
                 }),
@@ -162,12 +202,13 @@ class ProcessTable extends Component {
                     newData.stages_detalle = id;
                     await this.handleUpdate(newData);
                     if (this.state.apiStatus) {
-                      console.log("se actualiza");
                       this.setState({
                         data: [...dataUpdate],
                         apiStatus: false,
                       });
                     }
+                    if (newData.status_detalle === "waiting")
+                      this.setState({ open: true, rowData: newData });
                     resolve();
                   }, 1000);
                 }),
