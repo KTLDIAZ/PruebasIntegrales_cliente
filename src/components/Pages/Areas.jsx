@@ -9,7 +9,6 @@ class Areas extends Component {
     this.state = {
       data: [],
       areas: [],
-      stages: [],
       filters: [],
       loadComplete: false,
     };
@@ -22,29 +21,30 @@ class Areas extends Component {
     this.getFilter();
   };
 
-  getFilter() {
+  getFilter = async () => {
     this.state.data.forEach((element) => {
       this.setState({ areas: [...this.state.areas, element.name_detalle] });
     });
     this.setState({ areas: [...new Set(this.state.areas)] });
-    this.state.areas.forEach((element) => {
-      this.getArea(element);
-    });
-  }
+    for (let data of this.state.areas) {
+      await this.getArea(data);
+    }
+    this.setState({ loadComplete: true });
+  };
 
   getArea = async (element) => {
     let res = await Axios.get(`/api/Detalle/Filtro?name=${element}`);
     let data = res.data;
-    data.forEach((element) => {
-      this.setState({ stages: [...this.state.stages, element.stages_detalle] });
-    });
+    let stages = [];
+    for (let element of data) {
+      stages.push(element.stages_detalle);
+    }
     this.setState({
       filters: [
         ...this.state.filters,
-        { area: element, tests: [...new Set(this.state.stages)] },
+        { area: element, tests: [...new Set(stages)] },
       ],
     });
-    this.setState({ loadComplete: true });
   };
 
   componentDidMount() {
@@ -59,7 +59,7 @@ class Areas extends Component {
             <Link text="Nueva Área" path={"/"} />
           </div>
           <div className="areas-main-container__grid">
-            {this.state.loadComplete === true &&
+            {this.state.loadComplete === true ? (
               this.state.filters.map((area) => {
                 return (
                   <AreaCard
@@ -68,7 +68,10 @@ class Areas extends Component {
                     tests={area.tests}
                   />
                 );
-              })}
+              })
+            ) : (
+              <p />
+            )}
           </div>
         </article>
       </>

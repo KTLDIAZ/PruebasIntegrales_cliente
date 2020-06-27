@@ -6,13 +6,15 @@ const AreaCard = ({ name, tests }) => {
     <div className="area-card-main-container">
       <p className="area-card-main-container__title">{name}</p>
       {tests &&
-        tests.map((test) => (
-          <Button
-            key={test.stages_detalle}
-            text={`Etapa: ${test}`}
-            path={`/table/${name}/${test}`}
-          />
-        ))}
+        tests.map((test) => {
+          return (
+            <Button
+              key={test}
+              text={`Etapa: ${test}`}
+              path={`/table/${name}/${test}`}
+            />
+          );
+        })}
     </div>
   );
 };
