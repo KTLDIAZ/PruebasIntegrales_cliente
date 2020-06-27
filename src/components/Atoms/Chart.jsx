@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Polar } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 
 class Chart extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class Chart extends Component {
     return (
       <div className="chart-basic-container">
         <h2 className="chart-basic-container--title">{this.props.title}</h2>
-        <Polar data={this.state.ChartData} />
+        <Pie data={this.state.ChartData} />
       </div>
     );
   }
