@@ -20,6 +20,7 @@ class DialogForm extends Component {
       required: null,
       form: this.props.rowData,
       file: null,
+      hidden: true,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -39,7 +40,7 @@ class DialogForm extends Component {
     });
   }
 
-  handleSubmit(method) {
+  handleSubmit = async (method) => {
     const state = this.state.form;
     if (
       state.name_detalle &&
@@ -49,14 +50,16 @@ class DialogForm extends Component {
       state.observations_detalle &&
       state.stages_detalle
     ) {
-      Axios.post(`/api/Detalle/${method}`, state)
+      await Axios.post(`/api/Detalle/${method}`, state)
         .then((res) => {
           console.log(res);
           this.setState({ apiStatus: true });
+          alert("Registro guardado exitosamente");
+          this.props.onClose();
         })
         .catch((err) => console.log(err));
     }
-  }
+  };
 
   render() {
     const method = this.props.method;
@@ -175,18 +178,21 @@ class DialogForm extends Component {
               ) : (
                 <p></p>
               )}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  hidden
-                  margin="dense"
-                  id="id_detalle"
-                  name="id_detalle"
-                  type="number"
-                  variant="outlined"
-                  label="id_detalle"
-                  value={state.id_detalle}
-                />
-              </Grid>
+              {this.state.hidden === false ? (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    margin="dense"
+                    id="id_detalle"
+                    name="id_detalle"
+                    type="number"
+                    variant="outlined"
+                    label="id_detalle"
+                    value={state.id_detalle}
+                  />
+                </Grid>
+              ) : (
+                <p />
+              )}
             </Grid>
           </form>
         </DialogContent>

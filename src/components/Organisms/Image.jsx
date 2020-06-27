@@ -8,7 +8,7 @@ import {
 
 const Image = ({ url, alt, open, onClose }) => {
   return (
-    <Dialog maxWidth="lg" fullWidth={true} open={open}>
+    <Dialog maxWidth="sm" fullWidth={true} open={open}>
       <DialogContent dividers={true} style={{ background: "#fff" }}>
         <img src={url} alt={alt} />
       </DialogContent>
