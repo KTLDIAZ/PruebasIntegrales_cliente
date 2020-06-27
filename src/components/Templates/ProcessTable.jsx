@@ -17,6 +17,7 @@ import AttachmentIcon from "@material-ui/icons/Attachment";
 import Axios from "axios";
 import Form from "./DialogForm";
 import Image from "../Organisms/Image";
+import Chart from "../Atoms/Chart";
 
 class ProcessTable extends Component {
   constructor(props) {
@@ -27,6 +28,11 @@ class ProcessTable extends Component {
       open: false,
       openImage: false,
       apiStatus: false,
+      dashboardStatus: false,
+      success: 0,
+      inProcess: 0,
+      waiting: 0,
+      failed: 0,
       id: this.props.match.params.id,
       testId: this.props.match.params.testId,
     };
@@ -39,9 +45,42 @@ class ProcessTable extends Component {
   componentDidMount() {
     const { id, testId } = this.state;
     Axios.get(`/api/Detalle/Filtro?name=${testId}&stage=${id}`)
-      .then((res) => this.setState({ data: res.data }))
+      .then((res) => {
+        this.setState({ data: res.data });
+        this.getStatus();
+      })
       .catch((err) => console.log(err));
   }
+
+  getStatus = async () => {
+    await this.state.data.forEach((element) => {
+      switch (element.status_detalle) {
+        case "success":
+          this.setState({
+            success: this.state.success + 1,
+          });
+          break;
+        case "inProcess":
+          this.setState({
+            inProcess: this.state.inProcess + 1,
+          });
+          break;
+        case "failed":
+          this.setState({
+            failed: this.state.failed + 1,
+          });
+          break;
+        case "waiting":
+          this.setState({
+            waiting: this.state.waiting + 1,
+          });
+          break;
+        default:
+          break;
+      }
+    });
+    this.setState({ dashboardStatus: true });
+  };
 
   handleAdd = async (data) => {
     await Axios.post(`/api/Detalle/Guardar`, data)
@@ -119,103 +158,125 @@ class ProcessTable extends Component {
       SortArrow: ArrowUpward,
     };
 
-    const { id, testId, open, rowData, openImage } = this.state;
+    const {
+      id,
+      testId,
+      open,
+      rowData,
+      openImage,
+      dashboardStatus,
+      success,
+      failed,
+      waiting,
+      inProcess,
+    } = this.state;
 
     return (
-      <Grid
-        container
-        style={{
-          width: "100%",
-          alignSelf: "center",
-          marginLeft: "15%",
-          marginRight: "15%",
-          marginTop: "10%",
-        }}
-      >
-        {open === true ? (
-          <Form
-            open={open}
-            onClose={this.closeDialog}
-            rowData={rowData}
-            method={"Actualizar"}
-          />
+      <>
+        <Grid
+          container
+          style={{
+            width: "100%",
+            alignSelf: "center",
+            marginLeft: "15%",
+            marginRight: "15%",
+            marginTop: "10%",
+          }}
+        >
+          {open === true ? (
+            <Form
+              open={open}
+              onClose={this.closeDialog}
+              rowData={rowData}
+              method={"Actualizar"}
+            />
+          ) : (
+            <p></p>
+          )}
+          {openImage === true ? (
+            <Image
+              open={openImage}
+              url={rowData.image_detalle}
+              onClose={this.closeImage}
+            />
+          ) : (
+            <p></p>
+          )}
+          {this.state.data && (
+            <MaterialTable
+              title={`Etapa ${id}: ${testId}`}
+              icons={TableIcons}
+              columns={columns}
+              options={{
+                actionsColumnIndex: -1,
+              }}
+              actions={[
+                (rowData) => ({
+                  icon: VisibilityIcon,
+                  hidden: rowData.status_detalle === "waiting" ? false : true,
+                  tooltip: "Abrir incidencia",
+                  onClick: (event) => this.openDialog(rowData),
+                }),
+                (rowData) => ({
+                  icon: AttachmentIcon,
+                  hidden:
+                    rowData.image_detalle !== "" &&
+                    rowData.status_detalle !== "waiting"
+                      ? true
+                      : false,
+                  tooltip: "Ver imagen",
+                  onClick: (event) => this.openImage(rowData),
+                }),
+              ]}
+              data={this.state.data}
+              editable={{
+                isDeleteHidden: () => true,
+                onRowAdd: (newData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(async () => {
+                      newData.name_detalle = testId;
+                      newData.stages_detalle = id;
+                      await this.handleAdd(newData);
+                      if (this.state.apiStatus)
+                        this.setState({
+                          data: [...this.state.data, newData],
+                          apiStatus: false,
+                        });
+                      if (newData.status_detalle === "waiting")
+                        this.setState({ open: true, rowData: newData });
+                      resolve();
+                    }, 1000);
+                  }),
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(async () => {
+                      const dataUpdate = [...this.state.data];
+                      const index = oldData.tableData.id;
+                      dataUpdate[index] = newData;
+                      newData.name_detalle = testId;
+                      newData.stages_detalle = id;
+                      await this.handleUpdate(newData);
+                      if (this.state.apiStatus) {
+                        this.setState({
+                          data: [...dataUpdate],
+                          apiStatus: false,
+                        });
+                      }
+                      if (newData.status_detalle === "waiting")
+                        this.setState({ open: true, rowData: newData });
+                      resolve();
+                    }, 1000);
+                  }),
+              }}
+            />
+          )}
+        </Grid>
+        {dashboardStatus === true ? (
+          <Chart data={[success, inProcess, failed, waiting]} />
         ) : (
           <p></p>
         )}
-        {openImage === true ? (
-          <Image
-            open={openImage}
-            url={rowData.image_detalle}
-            onClose={this.closeImage}
-          />
-        ) : (
-          <p></p>
-        )}
-        {this.state.data && (
-          <MaterialTable
-            title={`Etapa ${id}: ${testId}`}
-            icons={TableIcons}
-            columns={columns}
-            options={{
-              actionsColumnIndex: -1,
-            }}
-            actions={[
-              (rowData) => ({
-                icon: VisibilityIcon,
-                hidden: rowData.status_detalle === "waiting" ? false : true,
-                tooltip: "Abrir incidencia",
-                onClick: (event) => this.openDialog(rowData),
-              }),
-              (rowData) => ({
-                icon: AttachmentIcon,
-                hidden: rowData.image_detalle ? false : true,
-                tooltip: "Ver imagen",
-                onClick: (event) => this.openImage(rowData),
-              }),
-            ]}
-            data={this.state.data}
-            editable={{
-              isDeleteHidden: () => true,
-              onRowAdd: (newData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(async () => {
-                    newData.name_detalle = testId;
-                    newData.stages_detalle = id;
-                    await this.handleAdd(newData);
-                    if (this.state.apiStatus)
-                      this.setState({
-                        data: [...this.state.data, newData],
-                        apiStatus: false,
-                      });
-                    if (newData.status_detalle === "waiting")
-                      this.setState({ open: true, rowData: newData });
-                    resolve();
-                  }, 1000);
-                }),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(async () => {
-                    const dataUpdate = [...this.state.data];
-                    const index = oldData.tableData.id;
-                    dataUpdate[index] = newData;
-                    newData.name_detalle = testId;
-                    newData.stages_detalle = id;
-                    await this.handleUpdate(newData);
-                    if (this.state.apiStatus) {
-                      this.setState({
-                        data: [...dataUpdate],
-                        apiStatus: false,
-                      });
-                    }
-                    if (newData.status_detalle === "waiting")
-                      this.setState({ open: true, rowData: newData });
-                    resolve();
-                  }, 1000);
-                }),
-            }}
-          />
-        )}
-      </Grid>
+      </>
     );
   }
 }
