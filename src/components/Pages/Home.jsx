@@ -99,7 +99,10 @@ class Home extends Component {
           />
         </div>
         {dataComplete === true ? (
-          <Chart data={[success, inProcess, failed, waiting]} />
+          <Chart
+            title="Status general"
+            data={[success, inProcess, failed, waiting]}
+          />
         ) : (
           <p />
         )}
